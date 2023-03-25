@@ -2,6 +2,8 @@
 @php
     $menu = bootstrap()->getAsideMenu();
     \App\Core\Adapters\Menu::filterMenuPermissions($menu->items);
+    
+    $modulnav = getmodulnav();
 @endphp
 
 <div
@@ -16,7 +18,24 @@
 >
     {{--begin::Menu--}}
     <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true">
-        {!! $menu->build() !!}
+        
+        <div class="menu-item {{ $modulnav == "pembelian" ? 'here' : ''}}">
+            <a class="menu-link" href="#">
+                <span class="menu-bullet">
+                    <span class="fas fa-shopping-cart"></span>
+                </span>
+                <span class="menu-title">Pembelian</span>
+            </a>
+        </div>
+
+        <div class="menu-item {{ $modulnav == "produk" ? 'here' : ''}}">
+            <a class="menu-link" href="#">
+                <span class="menu-bullet">
+                    <span class="fas fa-shopping-cart"></span>
+                </span>
+                <span class="menu-title">Produk</span>
+            </a>
+        </div>
     </div>
     {{--end::Menu--}}
 </div>

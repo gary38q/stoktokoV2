@@ -181,3 +181,12 @@ if (!function_exists('isRTL')) {
         return (bool) request()->input('rtl');
     }
 }
+
+function getmodulnav(){
+    $nav = Session::get('modulnav');
+    return $nav;
+}
+
+function setmodulnav($nav){
+    Session::put('modulnav',$nav);
+}

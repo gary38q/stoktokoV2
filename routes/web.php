@@ -42,19 +42,9 @@ Route::prefix('documentation')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // Account pages
-    Route::prefix('account')->group(function () {
-        Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
-        Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
-        Route::put('settings/email', [SettingsController::class, 'changeEmail'])->name('settings.changeEmail');
-        Route::put('settings/password', [SettingsController::class, 'changePassword'])->name('settings.changePassword');
-    });
-
-    // Logs pages
-    Route::prefix('log')->name('log.')->group(function () {
-        Route::resource('system', SystemLogsController::class)->only(['index', 'destroy']);
-        Route::resource('audit', AuditLogsController::class)->only(['index', 'destroy']);
-    });
+    
+    Route::get('index', [PagesController::class, 'index']);
+    
 });
 
 

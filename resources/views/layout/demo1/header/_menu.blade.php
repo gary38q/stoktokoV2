@@ -21,7 +21,6 @@
          id="#kt_header_menu"
          data-kt-menu="true"
     >
-        {!! $menu->build() !!}
     </div>
     <!--end::Menu-->
 </div>

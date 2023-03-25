@@ -44,7 +44,6 @@
 
         <!--begin::Drawers-->
         {{ theme()->getView('partials/topbar/_activity-drawer') }}
-        {{ theme()->getView('partials/explore/_main') }}
         <!--end::Drawers-->
 
         @if(theme()->getOption('layout', 'scrolltop/display') === true)
