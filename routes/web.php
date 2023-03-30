@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\Account\SettingsController;
 use App\Http\Controllers\Auth\SocialiteLoginController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Documentation\ReferencesController;
-use App\Http\Controllers\Logs\AuditLogsController;
-use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PembelianController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +43,10 @@ Route::prefix('documentation')->group(function () {
 Route::middleware('auth')->group(function () {
     
     Route::get('index', [PagesController::class, 'index']);
-    
+
+    Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian');
+    Route::post('add-to-cart', [CartController::class, 'AddToCart']);
+
 });
 
 

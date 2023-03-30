@@ -31,7 +31,7 @@
         <div class="menu-item {{ $modulnav == "produk" ? 'here' : ''}}">
             <a class="menu-link" href="#">
                 <span class="menu-bullet">
-                    <span class="fas fa-shopping-cart"></span>
+                    <span class="fas fa-database"></span>
                 </span>
                 <span class="menu-title">Produk</span>
             </a>

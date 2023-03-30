@@ -12,6 +12,6 @@ class PagesController extends Controller
     public function index()
     {
         setmodulnav('pembelian');
-        return view('pages.menu_now.pembelian');
+        return redirect(route('pembelian'));
     }
 }
