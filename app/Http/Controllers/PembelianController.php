@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Produk;
 use App\Services\PembelianServices;
+use Illuminate\Http\Request;
 
 class PembelianController extends Controller
 {
@@ -20,5 +21,10 @@ class PembelianController extends Controller
     public function index()
     {
         return $this->pembelianservice->index();
+    }
+
+    public function transaction(Request $request)
+    {
+        return $this->pembelianservice->transaction($request);
     }
 }

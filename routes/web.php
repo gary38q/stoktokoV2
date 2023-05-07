@@ -3,8 +3,11 @@
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Documentation\ReferencesController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PengirimanController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,7 +48,20 @@ Route::middleware('auth')->group(function () {
     Route::get('index', [PagesController::class, 'index']);
 
     Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian');
+    Route::post('transaction', [PembelianController::class, 'transaction'])->name('transaction');
+
+    Route::get('pengiriman', [PengirimanController::class, 'index'])->name('pengiriman');
+
     Route::post('add-to-cart', [CartController::class, 'AddToCart']);
+    Route::post('delete-cart', [CartController::class, 'DeleteCart'])->name('deleteCart');
+
+    Route::get('product', [ProductController::class, 'index'])->name('product');
+    Route::post('create-product',[ProductController::class, 'create'])->name('create_product');
+    Route::post('edit-product',[ProductController::class, 'edit'])->name('edit_product');
+    Route::post('delete-product', [ProductController::class, 'delete'])->name('delete_product');
+    Route::post('tambah-stock-product',[ProductController::class, 'tambah_stock'])->name('tambah_stock_product');
+
+    Route::get('history', [HistoryController::class, 'index'])->name('history');
 
 });
 

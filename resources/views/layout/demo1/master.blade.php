@@ -21,17 +21,17 @@
                 {{ theme()->getView('layout/header/_base') }}
 
                     <!--begin::Content-->
-                    <div class="content d-flex flex-column flex-column-fluid {{ theme()->printHtmlClasses('content', false) }}" id="kt_content">
-                    @if (theme()->getOption('layout', 'toolbar/display') === true)
+                    {{-- <div class="content d-flex flex-column flex-column-fluid {{ theme()->printHtmlClasses('content', false) }}" id="kt_content"> --}}
+                    {{-- @if (theme()->getOption('layout', 'toolbar/display') === true)
                         {{ theme()->getView('layout/toolbars/_' . theme()->getOption('layout', 'toolbar/layout')) }}
-                    @endif
+                    @endif --}}
 
                         <!--begin::Post-->
                         <div class="post d-flex flex-column-fluid" id="kt_post">
                             {{ theme()->getView('layout/_content', compact('slot')) }}
                         </div>
                         <!--end::Post-->
-                    </div>
+                    {{-- </div> --}}
                     <!--end::Content-->
 
                     {{ theme()->getView('layout/_footer') }}

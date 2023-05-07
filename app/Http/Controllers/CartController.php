@@ -18,8 +18,10 @@ class CartController extends Controller
     }
     
     public function AddToCart(Request $request){
-
         return $this->cartservice->AddToCart($request);
+    }
 
+    public function DeleteCart(Request $request){
+        return $this->cartservice->DeleteCart($request);
     }
 }

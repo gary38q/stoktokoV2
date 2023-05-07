@@ -58,6 +58,7 @@ License: {{ theme()->getOption('product', 'license') }}
 
     @yield('styles')
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 </head>
 {{-- end::Head --}}
 
@@ -101,6 +102,27 @@ License: {{ theme()->getOption('product', 'license') }}
 @endif
 
 @yield('scripts')
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+@php
+    $flashes = ["info","success","error"];
+@endphp
+
+@foreach($flashes as $flash)
+    @if(session()->has($flash))
+    <script>
+            $(document).ready(function(){
+                Swal.fire({
+                    title: '{{ ucwords($flash) }}',
+                    text: '{{ session()->get($flash) }}',
+                    icon: '{{ $flash }}'
+                });
+            });
+        </script>
+    @endif
+
+@endforeach
+
 </body>
 {{-- end::Body --}}
 </html>

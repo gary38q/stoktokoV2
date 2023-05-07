@@ -23,7 +23,7 @@
     <div class="aside-logo flex-column-auto" id="kt_aside_logo">
         {{--begin::Logo--}}
         <a href="{{ theme()->getPageUrl('index') }}">
-            <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/' . $logoFileName) }}" class="h-15px logo"/>
+            <h1 class="text-white">EDEN JAYA</h1>
         </a>
         {{--end::Logo--}}
 

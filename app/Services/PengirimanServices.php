@@ -6,7 +6,7 @@ use App\Models\Cart;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 
-class PembelianServices
+class PengirimanServices
 {
     public function index()
     {

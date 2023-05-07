@@ -20,7 +20,7 @@
     <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500" id="#kt_aside_menu" data-kt-menu="true">
         
         <div class="menu-item {{ $modulnav == "pembelian" ? 'here' : ''}}">
-            <a class="menu-link" href="#">
+            <a class="menu-link" href="{{ route('pembelian') }}">
                 <span class="menu-bullet">
                     <span class="fas fa-shopping-cart"></span>
                 </span>
@@ -28,12 +28,30 @@
             </a>
         </div>
 
+        <div class="menu-item {{ $modulnav == "pengiriman" ? 'here' : ''}}">
+            <a class="menu-link" href="{{ route('pengiriman') }}">
+                <span class="menu-bullet">
+                    <span class="fas fa-truck"></span>
+                </span>
+                <span class="menu-title">Pengiriman</span>
+            </a>
+        </div>
+
         <div class="menu-item {{ $modulnav == "produk" ? 'here' : ''}}">
-            <a class="menu-link" href="#">
+            <a class="menu-link" href="{{ route('product') }}">
                 <span class="menu-bullet">
                     <span class="fas fa-database"></span>
                 </span>
                 <span class="menu-title">Produk</span>
+            </a>
+        </div>
+
+        <div class="menu-item {{ $modulnav == "history" ? 'here' : ''}}">
+            <a class="menu-link" href="{{ route('history') }}">
+                <span class="menu-bullet">
+                    <span class="fas fa-history"></span>
+                </span>
+                <span class="menu-title">History</span>
             </a>
         </div>
     </div>
