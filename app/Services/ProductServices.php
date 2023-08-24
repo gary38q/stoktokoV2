@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\historybarang;
 use App\Models\Produk;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -11,7 +12,7 @@ class ProductServices
 {
     public function index(){
 
-        $data_product = Produk::all();
+        $data_product = Produk::where('user_id','=',Auth::user()->id)->get();
 
         setmodulnav('produk');
         return view('pages.menu_now.product', compact('data_product'));
@@ -28,6 +29,7 @@ class ProductServices
         ]);
 
         $product = new Produk;
+        $product->user_id = Auth::user()->id;
         $product->nama_produk = $validate['nama_barang'];
         $product->harga = $validate['harga_barang'];
         $product->save();
@@ -46,9 +48,11 @@ class ProductServices
         ]);
 
 
-        Produk::where('produk_SKU','=',$validate['cart_SKU'])->update([
-            'nama_produk' => $validate['nama_barang'],
-            'harga'       => $validate['harga_barang']
+        Produk::where('produk_SKU','=',$validate['cart_SKU'])
+        ->where('user_id','=',Auth::user()->id)
+        ->update([
+                'nama_produk' => $validate['nama_barang'],
+                'harga'       => $validate['harga_barang']
         ]);
 
 
@@ -57,13 +61,23 @@ class ProductServices
     
     public function delete(Request $request)
     {
-        Produk::where('produk_SKU','=',$request->id)->delete();
+        $checkqty = Produk::where('produk_SKU','=',$request->id)->first();
+        if($checkqty->jumlah_stock == 0){
+            Produk::where('produk_SKU','=',$request->id)->where('user_id','=',Auth::user()->id)->delete();
 
-        Session::flash('success', 'Product Deleted Successfully');
+            Session::flash('success', 'Product Deleted Successfully');
 
-        return response([
-            'status' => true
-        ]);
+            return response([
+                'status' => true
+            ]);
+        }
+        else{
+            Session::flash('error', 'Product Cannot be Deleted');
+
+            return response([
+                'status' => true
+            ]);
+        }
     }
 
     public function tambah_stock(Request $request){
@@ -76,21 +90,28 @@ class ProductServices
             'cart_SKUl' => 'required'
         ]);
 
-        $produk_info = Produk::where('produk_SKU','=',$validate['cart_SKUl'])->first();
+        $produk_info = Produk::where('produk_SKU','=',$validate['cart_SKUl'])
+        ->where('user_id','=',Auth::user()->id)->first();
 
-        $history_barang = new historybarang();
-        $history_barang->SKU_produk     = $produk_info->produk_SKU;
-        $history_barang->nama_produk    = $produk_info->nama_produk;
-        $history_barang->Pengirim       = $validate['pengirim'];
-        $history_barang->Jumlah         = $validate['Jumlah'];
-        $history_barang->save();
+        if($produk_info){
+            $history_barang                 = new historybarang();
+            $history_barang->user_id        = Auth::user()->id;
+            $history_barang->SKU_produk     = $produk_info->produk_SKU;
+            $history_barang->nama_produk    = $produk_info->nama_produk;
+            $history_barang->Pengirim       = $validate['pengirim'];
+            $history_barang->Jumlah         = $validate['Jumlah'];
+            $history_barang->save();
 
-        $updatejumlah = $produk_info->jumlah_stock + $validate['Jumlah'];
+            $updatejumlah = $produk_info->jumlah_stock + $validate['Jumlah'];
 
-        Produk::where('produk_SKU','=',$validate['cart_SKUl'])->update([
-            'jumlah_stock' => $updatejumlah
-        ]);
+            Produk::where('produk_SKU','=',$validate['cart_SKUl'])->update([
+                'jumlah_stock' => $updatejumlah
+            ]);
 
-        return redirect('product')->with('success','Stock Added Successfully');
+            return redirect('product')->with('success','Stock Added Successfully');
+        }
+        else{
+            return redirect('product')->with('error','Stock Gagal ditambahkan');            
+        }
     }
 }

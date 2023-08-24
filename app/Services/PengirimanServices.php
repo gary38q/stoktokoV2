@@ -3,22 +3,23 @@
 namespace App\Services;
 
 use App\Models\Cart;
+use App\Models\Pengiriman;
 use App\Models\Produk;
+use Auth;
 use Illuminate\Http\Request;
 
 class PengirimanServices
 {
     public function index()
     {
-        $product = Produk::all();
-        $cart = Cart::join('produks','carts.cart_SKU','=','produks.produk_SKU')->get();
+        $pengiriman = Pengiriman::where('user_id','=',Auth::user()->id)->get();
 
-        setmodulnav('pembelian');
-        return view('pages.menu_now.pembelian',compact('product','cart'));
+        setmodulnav('pengiriman');
+        return view('pages.menu_now.pengiriman',compact('pengiriman'));
     }
 
-    public function transaction(Request $request)
-    {
-        
+    public function create(Request $request){
+        dd($request->all());
     }
+
 }

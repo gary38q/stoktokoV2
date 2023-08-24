@@ -30,7 +30,7 @@
                                 <td align="center">
                                     <button class="btn btn-success d-inline-block" onclick="add_product_stock('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Tambah Stock</button>
                                     <button class="btn btn-primary d-inline-block" onclick="edit_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}')">Edit</button>
-                                    <button class="btn btn-danger d-inline-block" onclick="delete_product('{{ $product->produk_SKU }}')">Delete</button>
+                                    <button class="btn btn-danger d-inline-block" onclick="delete_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}')">Delete</button>
                                 </td>
                             </tr>
                             @endforeach

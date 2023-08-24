@@ -1,68 +1,126 @@
 <x-base-layout>
 
     <div class="container card p-5" style="overflow-x:auto;">
-        <h1>Pembelian</h1>
+        <h1>Pengiriman</h1>
         <hr>
-        <div class="row justify-content-between">
-            <div class="col-6" style="overflow-x:auto; border-right: solid black 1px">
-                <h3> Product</h3>
-                <table id="mytableproduct" class="table table-row-bordered gy-5">
-                    <thead>
-                        <tr class="fw-semibold fs-6 text-gray-800">
-                            <th class="text-center">Nama Product</th>
-                            <th class="text-center">Harga</th>
-                            <th class="text-center">Stock</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($product as $product)
-                        <tr>
-                            <td class="text-center">{{ $product->nama_produk }}</td>
-                            <td class="text-center">Rp. <?php echo number_format( $product->harga, 0,',','.') ?></td>
-                            <td class="text-center">{{ $product->jumlah_stock }}</td>
-                            <td align="center"><button class="btn btn-primary" onclick="openmodal('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Add</button></td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        
+            <!--begin::Accordion-->
+            <div class="accordion" id="kt_accordion_1">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="kt_accordion_1_header_1">
+                        <button class="accordion-button fs-4 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_1" aria-expanded="true" aria-controls="kt_accordion_1_body_1">
+                            Menunggu Pengiriman
+                        </button>
+                    </h2>
+                    <div id="kt_accordion_1_body_1" class="accordion-collapse collapse show" aria-labelledby="kt_accordion_1_header_1" data-bs-parent="#kt_accordion_1">
+                        <div class="accordion-body">
+                            <div style="overflow-x:auto;">
+                                    <table id="mytabletunggu" class="table table-row-bordered gy-5">
+                                        <thead>
+                                            <tr class="fw-semibold fs-6 text-gray-800">
+                                                <th class="text-center">Transaction ID</th>
+                                                <th class="text-center">Tanggal Transaksi</th>
+                                                <th class="text-center">Nama Penerima</th>
+                                                <th class="text-center">Alamat Penerima</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pengiriman as $waitPengiriman)
+                                                <tr>
+                                                    @if($waitPengiriman->status_pengiriman == 1)
+                                                    <td class="text-center">{{ $waitPengiriman->id_history_transaksi }}</td>
+                                                    <td class="text-center">{{ $waitPengiriman->created_date }}</td>
+                                                    <td class="text-center">{{ $waitPengiriman->nama_penerima }}</td>
+                                                    <td class="text-center">{{ $waitPengiriman->alamat_penerima }}</td>
+                                                    <td align="center"><button class="btn btn-primary" onclick="detail_pengiriman('{{ $waitPengiriman->id }}')">Kirim</button><button class="btn btn-danger" onclick="delete_pengiriman('{{ $waitPengiriman->id_history_transaksi }}','{{ $waitPengiriman->nama_penerima }}')">Batal</button></td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="kt_accordion_1_header_2">
+                        <button class="accordion-button fs-4 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_2" aria-expanded="false" aria-controls="kt_accordion_1_body_2">
+                        Dalam Pengiriman
+                        </button>
+                    </h2>
+                    <div id="kt_accordion_1_body_2" class="accordion-collapse collapse" aria-labelledby="kt_accordion_1_header_2" data-bs-parent="#kt_accordion_1">
+                        <div class="accordion-body">
+                            <div style="overflow-x:auto;">
+                                <table id="mytablepengiriman" class="table table-row-bordered gy-5">
+                                    <thead>
+                                        <tr class="fw-semibold fs-6 text-gray-800">
+                                            <th class="text-center">Transaction ID</th>
+                                            <th class="text-center">Tanggal Transaksi</th>
+                                            <th class="text-center">Nama Penerima</th>
+                                            <th class="text-center">Alamat Penerima</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pengiriman as $inPengiriman)
+                                        <tr>
+                                            @if($inPengiriman->status_pengiriman == 2)
+                                            <td class="text-center">{{ $inPengiriman->id_history_transaksi }}</td>
+                                            <td class="text-center">{{ $waitPengiriman->created_date }}</td>
+                                            <td class="text-center">{{ $inPengiriman->nama_penerima }}</td>
+                                            <td class="text-center">{{ $inPengiriman->alamat_penerima }}</td>
+                                            <td align="center"><button class="btn btn-primary" onclick="detail_pengiriman('{{ $inPengiriman->id }}')">Detail</button></td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="kt_accordion_1_header_3">
+                        <button class="accordion-button fs-4 fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_3" aria-expanded="false" aria-controls="kt_accordion_1_body_3">
+                        Pengiriman Selesai
+                        </button>
+                    </h2>
+                    <div id="kt_accordion_1_body_3" class="accordion-collapse collapse" aria-labelledby="kt_accordion_1_header_3" data-bs-parent="#kt_accordion_1">
+                        <div class="accordion-body">
+                            <div style="overflow-x:auto;">
+                                <table id="mytableselesai" class="table table-row-bordered gy-5">
+                                    <thead>
+                                        <tr class="fw-semibold fs-6 text-gray-800">
+                                            <th class="text-center">Transaction ID</th>
+                                            <th class="text-center">Tanggal Transaksi</th>
+                                            <th class="text-center">Nama Penerima</th>
+                                            <th class="text-center">Alamat Penerima</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($pengiriman as $donePengiriman)
+                                        <tr>
+                                            @if($donePengiriman->status_pengiriman == 3)
+                                            <td class="text-center">{{ $donePengiriman->id_history_transaksi }}</td>
+                                            <td class="text-center">{{ $waitPengiriman->created_date }}</td>
+                                            <td class="text-center">{{ $donePengiriman->nama_penerima }}</td>
+                                            <td class="text-center">{{ $donePengiriman->alamat_penerima }}</td>
+                                            <td align="center"><button class="btn btn-primary" onclick="detail_pengiriman('{{ $donePengiriman->id }}')">Detail</button></td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-6" style="overflow-x:auto;">
-                <h3> Keranjang</h3>
-                <table id="mytablekeranjang" class="table table-row-bordered gy-5">
-                    <thead>
-                        <tr class="fw-semibold fs-6 text-gray-800">
-                            <th class="text-center">Nama Product</th>
-                            <th class="text-center">Jumlah Barang</th>
-                            <th class="text-center">Total Harga</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    @php
-                        $total = 0;
-                    @endphp
-                    <tbody>
-                        @foreach ($cart as $cart)
-                        @php
-                            $total = $total+($cart->harga*$cart->Jumlah);
-                        @endphp
-                        <tr>
-                            <td class="text-center">{{ $cart->nama_produk }}</td>
-                            <td class="text-center">{{ $cart->Jumlah }}</td>
-                            <td class="text-center">Rp. <?php echo number_format( $cart->harga*$cart->Jumlah, 0,',','.') ?></td>
-                            <td align="center"><button class="btn btn-danger" onclick="delete_product('{{ $cart->produk_SKU }}','{{ $cart->nama_produk }}')">Delete</button></td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr class="fw-bold fs-6">
-                            <th colspan="3" class="text-nowrap align-end">Total:</th>
-                            <th colspan="1" class="text-dark fs-3">Rp. <?php echo number_format( $total, 0,',','.') ?></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
+            <!--end::Accordion-->
     </div>
 
     <!-- Modal-->
@@ -112,16 +170,20 @@
 
 <script>
 $(document).ready(function () {
-    $('#mytableproduct').DataTable({
+    $('#mytabletunggu').DataTable({
         dom: '<"top"f>rt<"bottom"ip><"clear">',
     });
 
-    $('#mytablekeranjang').DataTable({
+    $('#mytablepengiriman').DataTable({
+        dom: '<"top"f>rt<"bottom"ip><"clear">',
+    });
+
+    $('#mytableselesai').DataTable({
         dom: '<"top"f>rt<"bottom"ip><"clear">',
     });
 });
     
-    function openmodal(id,nama,harga,stock){
+    function detail_pengiriman(id){
         $('#nama_barang').text(nama);
         $('#harga_barang').text(harga);
         $('#stock_barang').text(stock);
@@ -134,7 +196,7 @@ $(document).ready(function () {
     })
 
     
-    function delete_product(id, name) {
+    function delete_pengiriman(id, name) {
         
         Swal.fire({
             text: "Apakah Anda yakin akan menghapus "+name+"?",

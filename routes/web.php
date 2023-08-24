@@ -48,12 +48,15 @@ Route::middleware('auth')->group(function () {
     Route::get('index', [PagesController::class, 'index']);
 
     Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian');
-    Route::post('transaction', [PembelianController::class, 'transaction'])->name('transaction');
+    Route::post('create- transaction', [PembelianController::class, 'transaction'])->name('create_transaction');
+
 
     Route::get('pengiriman', [PengirimanController::class, 'index'])->name('pengiriman');
+    Route::post('create-pengiriman', [PengirimanController::class, 'create'])->name('create_pengiriman');
 
     Route::post('add-to-cart', [CartController::class, 'AddToCart']);
     Route::post('delete-cart', [CartController::class, 'DeleteCart'])->name('deleteCart');
+    Route::get('delete-all-cart', [CartController::class, 'DeleteAllCart'])->name('deleteAllCart');
 
     Route::get('product', [ProductController::class, 'index'])->name('product');
     Route::post('create-product',[ProductController::class, 'create'])->name('create_product');

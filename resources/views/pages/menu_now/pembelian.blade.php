@@ -42,7 +42,7 @@
                         $total = 0;
                     @endphp
                     <tbody>
-                        @foreach ($cart as $cart)
+                        @foreach ($cart as $index=>$cart)
                         @php
                             $total = $total+($cart->harga*$cart->Jumlah);
                         @endphp
@@ -51,6 +51,9 @@
                             <td class="text-center">{{ $cart->Jumlah }}</td>
                             <td class="text-center">Rp. <?php echo number_format( $cart->harga*$cart->Jumlah, 0,',','.') ?></td>
                             <td align="center"><button class="btn btn-danger" onclick="delete_product('{{ $cart->produk_SKU }}','{{ $cart->nama_produk }}')">Delete</button></td>
+                            
+                            <input type="hidden" id="total_harga" value="{{ $total }}">
+                            <input type="hidden" id="total_qty" value="{{ $index+1 }}">
                         </tr>
                         @endforeach
                     </tbody>
@@ -61,6 +64,14 @@
                         </tr>
                     </tfoot>
                 </table>
+                <div class="row mt-5">
+                    <div class="col" align="left"><a href="{{ route('deleteAllCart') }}" class="btn btn-danger">Delete All</a></div>
+                    <div class="col" align="right">
+                        @if ($total != 0)
+                        <button class="btn btn-success" onclick="checkout()">Checkout</button>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -169,5 +180,59 @@ $(document).ready(function () {
                 });
             }
         });
+    }
+
+    function checkout(){
+        Swal.fire({
+            title: 'Checkout',
+            text: "Apakah Barang tersebut perlu dikirim?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Perlu Dikirim',
+            cancelButtonText: "Tidak Dikirim"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('create_pengiriman') }}",
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        'total_harga': $('#total_harga').val(),
+                        'total_qty'  : $('#total_qty').val()
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        ).then((result) => {
+                            window.location.reload();
+                        })
+                    }
+                });
+            }
+            else{
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('create_transaction') }}",
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        'total_harga': $('#total_harga').val(),
+                        'total_qty'  : $('#total_qty').val()
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                        ).then((result) => {
+                            window.location.reload();
+                        })
+                    }
+                });
+            }
+        })
     }
 </script>

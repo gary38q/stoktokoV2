@@ -24,4 +24,8 @@ class CartController extends Controller
     public function DeleteCart(Request $request){
         return $this->cartservice->DeleteCart($request);
     }
+
+    public function DeleteAllCart(Request $request){
+        return $this->cartservice->DeleteAllCart($request);
+    }
 }

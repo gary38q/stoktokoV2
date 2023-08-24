@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\Produk;
+use Auth;
 use Illuminate\Http\Request;
 
 class CartServices
@@ -12,6 +13,7 @@ class CartServices
         
         $checkcart = Cart::where('cart_SKU','=',$request->cart_SKU)->first();
         $checkproduct = Produk::where('produk_SKU','=',$request->cart_SKU)->first();
+
 
         if(!empty($checkcart)){
 
@@ -33,6 +35,7 @@ class CartServices
                 return redirect()->back()->with('error','Jumlah barang melebihi stok yang ada');
             }
             else{
+                $request->merge(['user_id' => Auth::user()->id]);
                 Cart::create($request->all());
             }
         }
@@ -44,11 +47,22 @@ class CartServices
     public function DeleteCart(Request $request){
 
         try {
-            Cart::where('cart_SKU','=',$request->id)->delete();
+            Cart::where('cart_SKU','=',$request->id)
+            ->where('user_id','=',Auth::user()->id)->delete();
             return redirect()->back()->with('success','Produk terhapus!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error','Produk tidak dapat dihapus!');
         }
 
+    }
+
+    public function DeleteAllCart(){
+
+        try {
+            Cart::where('user_id','=',Auth::user()->id)->delete();
+            return redirect()->back()->with('success','Produk terhapus!');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error','Produk tidak dapat dihapus!');
+        }
     }
 }
