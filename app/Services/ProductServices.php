@@ -32,6 +32,7 @@ class ProductServices
         $product->user_id = Auth::user()->id;
         $product->nama_produk = $validate['nama_barang'];
         $product->harga = $validate['harga_barang'];
+        $product->satuan_barang = $request->satuan_barang;
         $product->save();
         
         return redirect('product')->with('success','Product Created Successfully');
@@ -51,8 +52,9 @@ class ProductServices
         Produk::where('produk_SKU','=',$validate['cart_SKU'])
         ->where('user_id','=',Auth::user()->id)
         ->update([
-                'nama_produk' => $validate['nama_barang'],
-                'harga'       => $validate['harga_barang']
+                'nama_produk'   => $validate['nama_barang'],
+                'harga'         => $validate['harga_barang'],
+                'satuan_barang' => $request->satuan_barang
         ]);
 
 

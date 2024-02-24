@@ -29,7 +29,7 @@
                                 <td class="text-center">{{ $product->jumlah_stock }}</td>
                                 <td align="center">
                                     <button class="btn btn-success d-inline-block" onclick="add_product_stock('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Tambah Stock</button>
-                                    <button class="btn btn-primary d-inline-block" onclick="edit_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}')">Edit</button>
+                                    <button class="btn btn-primary d-inline-block" onclick="edit_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->satuan_barang }}')">Edit</button>
                                     <button class="btn btn-danger d-inline-block" onclick="delete_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}')">Delete</button>
                                 </td>
                             </tr>
@@ -123,6 +123,22 @@
                                 @enderror
                                 <br>
                             </div>
+                        </div>
+                        
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <div style="font-size: large">Satuan Barang : </div>
+                                <select name="satuan_barang" id="satuan_barang" class="form-control">
+                                    <option value="Pcs">Pcs</option>
+                                    <option value="Bks">Bks</option>
+                                    <option value="Ktk">Ktk</option>
+                                    <option value="Lsn">Lsn</option>
+                                    <option value="Sak">Sak</option>
+                                    <option value="Lmbr">Lmbr</option>
+                                </select>
+                                <br>
+                            </div>
                         </div>                        
                         <input type="hidden" name="cart_SKU" id="cart_SKU">
                     </div>
@@ -155,16 +171,18 @@
             $('#nama_barang').val('');
             $('#harga_barang').val('');
             $('#cart_SKU').val('');
+            $('#satuan_barang').val('Pcs');
             $('.errtext').css('display','none');
             $('#CreateModalCenter').modal('show');
         }
 
-        function edit_product(id,nama,harga){
+        function edit_product(id,nama,harga,satuan_barang){
             $('#myform1').attr('action','{{ route('edit_product') }}')
             $('#exampleModalLongTitle').text('Edit Product');
             $('#nama_barang').val(nama);
             $('#harga_barang').val(harga);
             $('#cart_SKU').val(id);
+            $('#satuan_barang').val(satuan_barang);
             $('.errtext').css('display','none');
             $('#CreateModalCenter').modal('show');
         }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\SocialiteLoginController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ConvertController;
 use App\Http\Controllers\Documentation\ReferencesController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\PagesController;
@@ -48,7 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::get('index', [PagesController::class, 'index']);
 
     Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian');
-    Route::post('create- transaction', [PembelianController::class, 'transaction'])->name('create_transaction');
+    Route::post('create-transaction', [PembelianController::class, 'transaction'])->name('create_transaction');
+    Route::post('create-no-print-transaction', [PembelianController::class, 'transaction_no_print'])->name('create_no_print_transaction');
+    Route::get('cetakstruk', [PembelianController::class, 'cetakstruk'])->name('cetak_struk');
 
 
     Route::get('pengiriman', [PengirimanController::class, 'index'])->name('pengiriman');
@@ -63,6 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::post('edit-product',[ProductController::class, 'edit'])->name('edit_product');
     Route::post('delete-product', [ProductController::class, 'delete'])->name('delete_product');
     Route::post('tambah-stock-product',[ProductController::class, 'tambah_stock'])->name('tambah_stock_product');
+
+    Route::get('convert-product', [ConvertController::class, 'index'])->name('convert_product');
+    Route::post('create-convert',[ConvertController::class, 'create'])->name('create_convert');
 
     Route::get('history', [HistoryController::class, 'index'])->name('history');
 

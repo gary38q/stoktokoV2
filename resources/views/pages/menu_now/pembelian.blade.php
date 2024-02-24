@@ -185,35 +185,15 @@ $(document).ready(function () {
     function checkout(){
         Swal.fire({
             title: 'Checkout',
-            text: "Apakah Barang tersebut perlu dikirim?",
+            text: "Apakah Perlu Cetak Struk?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Perlu Dikirim',
-            cancelButtonText: "Tidak Dikirim"
+            confirmButtonText: 'Cetak',
+            cancelButtonText: "Tidak"
             }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    method: "POST",
-                    url: "{{ route('create_pengiriman') }}",
-                    data: {
-                        _token: '{{csrf_token()}}',
-                        'total_harga': $('#total_harga').val(),
-                        'total_qty'  : $('#total_qty').val()
-                    },
-                    success: function(response) {
-                        Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                        ).then((result) => {
-                            window.location.reload();
-                        })
-                    }
-                });
-            }
-            else{
                 $.ajax({
                     method: "POST",
                     url: "{{ route('create_transaction') }}",
@@ -223,13 +203,33 @@ $(document).ready(function () {
                         'total_qty'  : $('#total_qty').val()
                     },
                     success: function(response) {
-                        Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                        ).then((result) => {
+                        // Swal.fire(
+                        // 'Success!',
+                        // 'Your file has been deleted.',
+                        // 'success'
+                        // ).then((result) => {
                             window.location.reload();
-                        })
+                        // })
+                    }
+                });
+            }
+            else{
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('create_no_print_transaction') }}",
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        'total_harga': $('#total_harga').val(),
+                        'total_qty'  : $('#total_qty').val()
+                    },
+                    success: function(response) {
+                        // Swal.fire(
+                        // 'Deleted!',
+                        // 'Your file has been deleted.',
+                        // 'success'
+                        // ).then((result) => {
+                            window.location.reload();
+                        // })
                     }
                 });
             }

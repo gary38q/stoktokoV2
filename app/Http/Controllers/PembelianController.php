@@ -25,6 +25,11 @@ class PembelianController extends Controller
 
     public function transaction(Request $request)
     {
-        return $this->pembelianservice->transaction($request);
+        return $this->pembelianservice->transaction($request,1);
+    }
+
+    public function transaction_no_print(Request $request)
+    {
+        return $this->pembelianservice->transaction($request,0);        
     }
 }
