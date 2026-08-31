@@ -28,21 +28,30 @@
             </a>
         </div>
 
-        <div class="menu-item {{ $modulnav == "pengiriman" ? 'here' : ''}}">
+        {{-- <div class="menu-item {{ $modulnav == "pengiriman" ? 'here' : ''}}">
             <a class="menu-link" href="{{ route('pengiriman') }}">
                 <span class="menu-bullet">
                     <span class="fas fa-truck"></span>
                 </span>
                 <span class="menu-title">Pengiriman</span>
             </a>
-        </div>
+        </div> --}}
 
         <div class="menu-item {{ $modulnav == "produk" ? 'here' : ''}}">
             <a class="menu-link" href="{{ route('product') }}">
                 <span class="menu-bullet">
-                    <span class="fas fa-database"></span>
+                    <i class="fas fa-warehouse"></i>
                 </span>
                 <span class="menu-title">Produk</span>
+            </a>
+        </div>
+
+        <div class="menu-item {{ $modulnav == "convert" ? 'here' : ''}}">
+            <a class="menu-link" href="{{ route('convert_product') }}">
+                <span class="menu-bullet">
+                    <span class="fas fa-database"></span>
+                </span>
+                <span class="menu-title">Convert</span>
             </a>
         </div>
 
@@ -52,6 +61,38 @@
                     <span class="fas fa-history"></span>
                 </span>
                 <span class="menu-title">History</span>
+            </a>
+        </div>
+        <div data-kt-menu-trigger="click" class="menu-item menu-accordion hover {{ $modulnav == "convert" ? 'show' : ''}}">
+            <!--begin:Menu link-->
+            <span class="menu-link">
+            <span class="menu-title">User Profile</span>
+            <span class="menu-arrow"></span>
+            </span>
+            <!--end:Menu link-->
+            <!--begin:Menu sub-->
+            <div class="menu-sub menu-sub-accordion show" kt-hidden-height="250" style="">
+            <!--begin:Menu item-->
+            <div class="menu-item">
+                <!--begin:Menu link-->
+                <a class="menu-link" href="/metronic8/demo1/pages/user-profile/overview.html">
+                <span class="menu-bullet">
+                    <span class="bullet bullet-dot"></span>
+                </span>
+                <span class="menu-title">Overview</span>
+                </a>
+                <!--end:Menu link-->
+            </div>
+            <!--end:Menu item-->
+            </div>
+            <!--end:Menu sub-->
+        </div>
+        <div class="menu-item {{ $modulnav == "convert" ? 'here' : ''}}">
+            <a class="menu-link" href="{{ route('convert_product') }}">
+                <span class="menu-bullet">
+                    <span class="fas fa-database"></span>
+                </span>
+                <span class="menu-title">Convert</span>
             </a>
         </div>
     </div>

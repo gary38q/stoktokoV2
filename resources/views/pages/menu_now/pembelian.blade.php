@@ -18,7 +18,7 @@
                     <tbody>
                         @foreach ($product as $product)
                         <tr>
-                            <td class="text-center">{{ $product->nama_produk }}</td>
+                            <td class="text-center">{{ strtoupper($product->nama_produk) }}</td>
                             <td class="text-center">Rp. <?php echo number_format( $product->harga, 0,',','.') ?></td>
                             <td class="text-center">{{ $product->jumlah_stock }}</td>
                             <td align="center"><button class="btn btn-primary" onclick="openmodal('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Add</button></td>
@@ -47,7 +47,7 @@
                             $total = $total+($cart->harga*$cart->Jumlah);
                         @endphp
                         <tr>
-                            <td class="text-center">{{ $cart->nama_produk }}</td>
+                            <td class="text-center">{{ strtoupper($cart->nama_produk) }}</td>
                             <td class="text-center">{{ $cart->Jumlah }}</td>
                             <td class="text-center">Rp. <?php echo number_format( $cart->harga*$cart->Jumlah, 0,',','.') ?></td>
                             <td align="center"><button class="btn btn-danger" onclick="delete_product('{{ $cart->produk_SKU }}','{{ $cart->nama_produk }}')">Delete</button></td>

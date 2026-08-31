@@ -2,28 +2,21 @@
 
 namespace App\Services;
 
+use App\Models\convert;
 use App\Models\historybarang;
 use App\Models\Produk;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class ProductServices
+class ConvertServices
 {
-    public function index(){
+    public function Convert(){
 
-        $data_product = Produk::where('user_id','=',Auth::user()->id)->get();
+        $convert = convert::all();
 
-        setmodulnav('produk');
-        return view('pages.menu_now.product', compact('data_product'));
+        return $convert;
 
-    }
-
-    public function all()
-    {
-        $data_product = Produk::where('user_id','=',Auth::user()->id)->get();
-
-        return $data_product;
     }
 
     public function create(Request $request){

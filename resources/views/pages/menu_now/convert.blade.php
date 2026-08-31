@@ -4,10 +4,10 @@
         <div class="card p-5">
             <div class="row">
                 <div class="col-9" align="left">
-                    <h1>Product</h1>
+                    <h1>Convert</h1>
                 </div>
                 <div class="col-3" align="right">
-                    <button class="btn btn-primary" onclick="create_product()">Tambah Product</button>
+                    <button class="btn btn-primary" onclick="create_convert()">Tambah Convert</button>
                 </div>
             </div>
         <hr>
@@ -16,20 +16,18 @@
                     <thead>
                         <tr class="fw-semibold fs-6 text-gray-800">
                             <th class="text-center">Nama Product</th>
-                            <th class="text-center">Harga</th>
-                            <th class="text-center">Stock</th>
+                            <th class="text-center">Hasil Convert</th>  
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                            @foreach ($data_product as $product)
+                            @foreach ($convert as $product)
                             <tr>
-                                <td class="text-center">{{ strtoupper($product->nama_produk) }}</td>
+                                <td class="text-center">{{ $product->nama_produk }}</td>
                                 <td class="text-center">Rp. <?php echo number_format( $product->harga, 0,',','.') ?></td>
-                                <td class="text-center">{{ $product->jumlah_stock }}</td>
                                 <td align="center">
-                                    <button class="btn btn-success d-inline-block" onclick="add_product_stock('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Tambah Stock</button>
-                                    <button class="btn btn-primary d-inline-block" onclick="edit_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->satuan_barang }}')">Edit</button>
+                                    <button class="btn btn-success d-inline-block" onclick="add_product_stock('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">Convert Barang</button>
+                                    <button class="btn btn-primary d-inline-block" onclick="edit_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->satuan_barang }}','{{ $product->jumlah_convert }}')">Edit</button>
                                     <button class="btn btn-danger d-inline-block" onclick="delete_product('{{ $product->produk_SKU }}','{{ $product->nama_produk }}')">Delete</button>
                                 </td>
                             </tr>
@@ -99,10 +97,21 @@
                 <form method="POST" id="myform1">
                     @csrf
                     <div class="modal-header">
-                        <h4 class="modal-title" id="exampleModalLongTitle">Create Product</h4>
+                        <h4 class="modal-title" id="exampleModalLongTitle">Tambah Convert</h4>
                     </div>
                     <div class="modal-body">
 
+                        <br>
+                        <div>
+                            <div style="font-size: large">Barang yang di convert : </div>
+                            <select name="convert_barang" id="convert_barang" class="form-control">
+                                @foreach ($product as $barang)
+                                    <option value="{{ $barang->produk_SKU }}">{{ $barang->nama_produk }}</option>
+                                @endforeach
+                            </select>
+                            <br>
+                        </div>
+                        
                         <br>
                         <div>
                             <div style="font-size: large">Nama Barang : </div>
@@ -139,6 +148,18 @@
                                 </select>
                                 <br>
                             </div>
+                        </div>      
+
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <div style="font-size: large">Jumlah Convert</div>
+                                    <input type="number" class="form-control" id="jumlah_convert" name="jumlah_convert">
+                                    @error('jumlah_convert')
+                                        <span class="text-danger errtext">Jumlah Convert Harus Diisi</span>
+                                    @enderror
+                                <br>
+                            </div>
                         </div>                        
                         <input type="hidden" name="cart_SKU" id="cart_SKU">
                     </div>
@@ -165,22 +186,24 @@
 
         $("#kt_datatable_zero_configuration").DataTable();
 
-        function create_product(){
+        function create_convert(){
             $('#myform1').attr('action','{{ route('create_product') }}')
             $('#exampleModalLongTitle').text('Create Product');
             $('#nama_barang').val('');
             $('#harga_barang').val('');
+            $('#jumlah_convert').val('');
             $('#cart_SKU').val('');
             $('#satuan_barang').val('Pcs');
             $('.errtext').css('display','none');
             $('#CreateModalCenter').modal('show');
         }
 
-        function edit_product(id,nama,harga,satuan_barang){
+        function edit_product(id,nama,harga,satuan_barang,jumlahconvert){
             $('#myform1').attr('action','{{ route('edit_product') }}')
             $('#exampleModalLongTitle').text('Edit Product');
             $('#nama_barang').val(nama);
             $('#harga_barang').val(harga);
+            $('#jumlah_convert').val(jumlahconvert);
             $('#cart_SKU').val(id);
             $('#satuan_barang').val(satuan_barang);
             $('.errtext').css('display','none');

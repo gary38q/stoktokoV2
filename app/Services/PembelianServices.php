@@ -24,7 +24,7 @@ class PembelianServices
         ->get();
 
         setmodulnav('pembelian');
-        return view('pages.menu_now.pembelian',compact('product','cart'));
+        return view('pages.menu_now.POS',compact('product','cart'));
     }
 
     public function transaction(Request $request,$print)
