@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional POS Terminal</title>
+    <title>Eden Jaya POS</title>
+    <script src="https://kit.fontawesome.com/19efc8c9d6.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -14,34 +16,46 @@
         .sidebar-nav { height: 100vh; background: #fff; border-right: 1px solid #dee2e6; }
         .product-card { cursor: pointer; transition: transform 0.1s; border: none; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .product-card:active { transform: scale(0.95); }
+        .product-container { max-height: 80vh; overflow-y: auto; }
         .cart-section { height: 100vh; background: #fff; border-left: 1px solid #dee2e6; display: flex; flex-direction: column; }
         .cart-items { flex-grow: 1; overflow-y: auto; }
         .badge-stock { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; }
         .total-section { background: #1a1d23; color: white; border-radius: 15px 15px 0 0; }
+        input::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}
     </style>
 </head>
 <body>
 
 <div class="container-fluid">
     <div class="row">
-        {{-- <div class="col-md-1 sidebar-nav d-flex flex-column align-items-center py-4">
-            <div class="mb-4 text-primary"><i data-lucide="layout-grid"></i></div>
-            <button class="btn btn-light mb-3 p-3 w-75 shadow-sm"><i data-lucide="package"></i></button>
-            <button class="btn btn-white mb-3 p-3 w-75"><i data-lucide="utensils"></i></button>
-            <button class="btn btn-white mb-3 p-3 w-75"><i data-lucide="settings"></i></button>
-            <div class="mt-auto mb-3 text-danger"><i data-lucide="log-out"></i></div>
-        </div> --}}
 
-        <div class="col-md-10 py-4 px-4">
+        <div class="col-md-9">
+                <div class="container-fluid p-4">
+                    <a class="navbar-brand fw-bold" href="/">Eden Jaya</a>
+                    <ul class="navbar-nav d-flex flex-row gap-4">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/product">Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#delivery">Delivery</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#convert">Convert</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#transaction-history">Transaction History</a>
+                        </li>
+                    </ul>
+                </div>
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold">Menu / Products</h4>
+                <h4 class="fw-bold">Products</h4>
                 <div class="input-group w-75 shadow-sm">
                     {{-- <span class="input-group-text bg-white border-end-0"><i data-lucide="search" size="18"></i></span> --}}
                     <input type="text" class="form-control border-start-0" id="searchInput" onkeyup="searchTable()"  placeholder="Search product or scan barcode...">
                 </div>
             </div>
 
-            <div class="row g-3">
+            <div class="row g-3 product-container">
                                  
                 @foreach ($product as $product)
                 <div class="col-lg-3 col-md-4 col-sm-6 listproduct" id="{{ str_replace(' ', '', $product->nama_produk ) }}" onclick="openmodal('{{ $product->produk_SKU }}','{{ $product->nama_produk }}','{{ $product->harga }}','{{ $product->jumlah_stock }}')">
@@ -57,40 +71,42 @@
             </div>
         </div>
 
-        <div class="col-md-2 cart-section p-4">
+        <div class="col-md-3 cart-section p-4">
             <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold">Current Order</h5>
-                <button class="btn btn-sm btn-outline-danger">Clear</button>
+                <button onclick="clear_cart()" class="btn btn-danger">Clear</button>
             </div>
 
             <div class="cart-items p-3">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="flex-grow-1">
-                        <p class="mb-0 fw-bold">Premium Widget A</p>
-                        <small class="text-muted">$24.00 x 1</small>
+                
+                    @php
+                        $total = 0;
+                    @endphp
+                @foreach ($cart as $index=>$cart)
+                @php
+                    $total = $total+($cart->harga*$cart->Jumlah);
+                @endphp
+                <div class="d-flex content-end align-items-center mb-3">
+                    <div class="flex-grow-1 w-50">
+                        <p class="mb-0 fw-bold">{{ strtoupper($cart->nama_produk) }}</p>
+                        <small class="text-muted">Rp. {{ number_format($cart->harga, 0, '.', '.') }}</small>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-sm btn-light border">-</button>
-                        <span class="fw-bold">1</span>
-                        <button class="btn btn-sm btn-light border">+</button>
+                    <div class="d-flex align-items-center w-50">
+                        <button class="btn btn-sm btn-warning me-2" onclick="delete_product('{{ $cart->produk_SKU }}','{{ $cart->nama_produk }}')"><i class="fa-regular fa-trash-can"></i></button>
+                        <button class="btn btn-sm btn-light border" onclick="decreaseQty(this)">-</button>
+                        <input type="number" class="form-control qty-display fw-bold border-0 ms-2 me-2" name="Jumlah" onchange="updateTotalPrice()" value="{{ $cart->Jumlah }}" min="1">
+                        <button class="btn btn-sm btn-light border" onclick="increaseQty(this)">+</button>
                     </div>
                 </div>
+                @endforeach   
             </div>
 
             <div class="total-section p-4">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-secondary">Subtotal</span>
-                    <span class="fw-bold">$24.00</span>
-                </div>
-                <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-                    <span class="text-secondary">Tax (10%)</span>
-                    <span class="fw-bold">$2.40</span>
-                </div>
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="mb-0">Total</h4>
-                    <h4 class="mb-0 text-info">$26.40</h4>
+                    <h4 class="mb-0 text-info" id="totalPrice">Rp. {{ number_format($total, 0, '.', '.') }}</h4>
                 </div>
-                <button class="btn btn-info w-100 py-3 fw-bold text-white shadow">
+                <button class="btn btn-info w-100 py-3 fw-bold text-white shadow" onclick="checkout()">
                     PLACE ORDER <i data-lucide="chevron-right" class="ms-2"></i>
                 </button>
             </div>
@@ -107,14 +123,14 @@
                     <div class="modal-header">
                         <h4 class="modal-title" id="exampleModalLongTitle">Add to Cart</h4>
                     </div>
-                    <div class="modal-body">
-                        <div>
+                    <div class="modal-body p-4">
+                        <div class="row p-3">
                             <div style="font-size: large">Nama Barang : </div>
                             <div id="nama_barang" style="font-size: large"></div>
                             <br>
                         </div>
 
-                        <div class="row">
+                        <div class="row p-3">
                             <div class="col">
                                 <div style="font-size: large">Harga Barang : </div>
                                 <div id="harga_barang" style="font-size: large"></div>
@@ -130,11 +146,11 @@
                         
                             <br>
                         <label style="font-size: large">Jumlah Barang</label>
-                        <input type="number" class="form-control" id="Jumlah" name="Jumlah">
+                        <input type="number" class="form-control" id="Jumlah" name="Jumlah" value=1 min=1 required>
                         <input type="hidden" name="cart_SKU" id="cart_SKU">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
                     </div>
                 </form>
             </div>
@@ -149,37 +165,190 @@
     // });
 
     function openmodal(id,nama,harga,stock){
-        // $("#paymentModal").modal()
+        let hargaBarang = parseInt(harga);
         $('#nama_barang').text(nama);
-        $('#harga_barang').text(harga);
+        document.getElementById('harga_barang').textContent = 'Rp. ' + hargaBarang.toLocaleString('id-ID');
         $('#stock_barang').text(stock);
         $('#cart_SKU').val(id);
         $('#exampleModalCenter').modal('show');
     }
     
     function searchTable() {
-    // 1. Get the input value and table rows
-    const input = document.getElementById("searchInput");
-    const filter = input.value.toLowerCase();
-    
-    const listproduct =  Array.from(document.querySelectorAll('.listproduct'))
-                .map(element => element.id);
-
-    for (let j = 0; j < listproduct.length; j++) {
-            if (listproduct[j]) {
-                const textValue = listproduct[j];
-                // Check if the search term exists in this cell
-                if (textValue.toLowerCase().indexOf(filter) > -1) {
-                    console.log(textValue);
-                    $('#' + textValue).css('display', 'block'); // Show the row
-                    break; // If a match is found in any column, stop checking this row
-                }
-                else {
-                    $('#' + textValue).css('display', 'none'); // Hide the row
-                }
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toLowerCase();
+        const productCards = document.querySelectorAll('.listproduct');
+        
+        productCards.forEach(card => {
+            const productName = card.querySelector('.card-title').textContent.toLowerCase();
+            if (productName.indexOf(filter) > -1) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
             }
+        });
+    }
+
+    function decreaseQty(button) {
+        const qtyDisplay = button.parentElement.querySelector('.qty-display');
+        let currentQty = parseInt(qtyDisplay.value, 10);
+        if (currentQty > 1) {
+            qtyDisplay.value = currentQty - 1;
+            updateTotalPrice();
         }
     }
+
+    function increaseQty(button) {
+        const qtyDisplay = button.parentElement.querySelector('.qty-display');
+        let currentQty = parseInt(qtyDisplay.value, 10);
+        qtyDisplay.value = currentQty + 1;
+        updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+        const cartItems = document.querySelectorAll('.cart-items > div');
+        let total = 0;
+        
+        cartItems.forEach(item => {
+            const priceText = item.querySelector('small').textContent.replace('Rp. ', '').replace(/\./g, '');
+            const qty = parseInt(item.querySelector('.qty-display').value, 10);
+            const price = parseInt(priceText);
+            total += price * qty;
+        });
+        
+        document.getElementById('totalPrice').textContent = 'Rp. ' + total.toLocaleString('id-ID');
+    }
+
+    function delete_product(id, name) {
+        
+        Swal.fire({
+            text: "Apakah Anda yakin akan menghapus "+name+"?",
+            icon: "warning",
+            width: "500px",
+            showCancelButton:!0,
+            buttonsStyling:!1,
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak",
+            didOpen: function(popup) {
+                popup.style.fontSize = "16px";
+            },
+            customClass: {
+                confirmButton: "btn btn-active-light",
+                cancelButton: "btn btn-primary"
+            }
+        }).then(function(e) {
+            if(e.value) {
+                Swal.fire({
+                    text: "Menghapus data...",
+                    allowOutsideClick: false
+                });
+
+                Swal.showLoading();
+
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('deleteCart') }}",
+                    data: {
+                        id: id,
+                        _token: '{{csrf_token()}}'
+                    },
+                    success: function(response) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    }
+
+    function clear_cart() {
+        
+        Swal.fire({
+            text: "Apakah Anda yakin akan menghapus semua item dari keranjang?",
+            icon: "warning",
+            width: "500px",
+            showCancelButton:!0,
+            buttonsStyling:!1,
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak",
+            didOpen: function(popup) {
+                popup.style.fontSize = "16px";
+            },
+            customClass: {
+                confirmButton: "btn btn-active-light",
+                cancelButton: "btn btn-primary"
+            }
+        }).then(function(e) {
+            if(e.value) {
+                Swal.fire({
+                    text: "Menghapus data...",
+                    allowOutsideClick: false
+                });
+
+                Swal.showLoading();
+
+                $.ajax({
+                    url: "{{ route('deleteAllCart') }}",
+                    success: function(response) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    }
+    
+    function checkout(){
+        Swal.fire({
+            title: 'Checkout',
+            text: "Apakah Perlu Cetak Struk?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Cetak',
+            cancelButtonText: "Tidak"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('create_transaction') }}",
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        'total_harga': $('#total_harga').val(),
+                        'total_qty'  : $('#total_qty').val()
+                    },
+                    success: function(response) {
+                        // Swal.fire(
+                        // 'Success!',
+                        // 'Your file has been deleted.',
+                        // 'success'
+                        // ).then((result) => {
+                            window.location.reload();
+                        // })
+                    }
+                });
+            }
+            else{
+                $.ajax({
+                    method: "POST",
+                    url: "{{ route('create_no_print_transaction') }}",
+                    data: {
+                        _token: '{{csrf_token()}}',
+                        'total_harga': $('#total_harga').val(),
+                        'total_qty'  : $('#total_qty').val()
+                    },
+                    success: function(response) {
+                        // Swal.fire(
+                        // 'Deleted!',
+                        // 'Your file has been deleted.',
+                        // 'success'
+                        // ).then((result) => {
+                            window.location.reload();
+                        // })
+                    }
+                });
+            }
+        })
+    }
+
 </script>
 </body>
 </html>
