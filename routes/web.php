@@ -50,7 +50,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian');
     Route::post('create-transaction', [PembelianController::class, 'transaction'])->name('create_transaction');
-    Route::post('create-no-print-transaction', [PembelianController::class, 'transaction_no_print'])->name('create_no_print_transaction');
+    // Route::post('create-no-print-transaction', [PembelianController::class, 'transaction_no_print'])->name('create_no_print_transaction');
     Route::get('cetakstruk', [PembelianController::class, 'cetakstruk'])->name('cetak_struk');
 
 

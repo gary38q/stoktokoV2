@@ -81,12 +81,13 @@
                 
                     @php
                         $total = 0;
+                        $index = 0;
                     @endphp
                 @foreach ($cart as $index=>$cart)
                 @php
                     $total = $total+($cart->harga*$cart->Jumlah);
                 @endphp
-                <div class="d-flex content-end align-items-center mb-3">
+                <div class="d-flex content-end align-items-center mb-3" data-product-id="{{ $cart->produk_SKU }}">
                     <div class="flex-grow-1 w-50">
                         <p class="mb-0 fw-bold">{{ strtoupper($cart->nama_produk) }}</p>
                         <small class="text-muted">Rp. {{ number_format($cart->harga, 0, '.', '.') }}</small>
@@ -98,9 +99,12 @@
                         <button class="btn btn-sm btn-light border" onclick="increaseQty(this)">+</button>
                     </div>
                 </div>
+
                 @endforeach   
             </div>
 
+                <input type="hidden" id="total_harga" value="{{ $total }}">
+                <input type="hidden" id="total_qty" value="{{ $index+1 }}">
             <div class="total-section p-4">
                 <div class="d-flex justify-content-between mb-4">
                     <h4 class="mb-0">Total</h4>
@@ -215,7 +219,15 @@
             total += price * qty;
         });
         
-        document.getElementById('totalPrice').textContent = 'Rp. ' + total.toLocaleString('id-ID');
+        document.getElementById('totalPrice').textContent = 'Rp. ' + total.toLocaleString('id-ID');        
+        document.getElementById('total_harga').value = total;
+    }
+
+    function getCartData() {
+        return Array.from(document.querySelectorAll('.cart-items > div')).map(item => ({
+            item_id: item.dataset.productId,
+            quantity: parseInt(item.querySelector('.qty-display').value, 10)
+        }));
     }
 
     function delete_product(id, name) {
@@ -313,36 +325,28 @@
                     data: {
                         _token: '{{csrf_token()}}',
                         'total_harga': $('#total_harga').val(),
-                        'total_qty'  : $('#total_qty').val()
+                        'total_qty'  : $('#total_qty').val(),
+                        'data'      : JSON.stringify(getCartData()),
+                        'print'     : 1
                     },
                     success: function(response) {
-                        // Swal.fire(
-                        // 'Success!',
-                        // 'Your file has been deleted.',
-                        // 'success'
-                        // ).then((result) => {
-                            window.location.reload();
-                        // })
+                        window.location.reload();
                     }
                 });
             }
             else{
                 $.ajax({
                     method: "POST",
-                    url: "{{ route('create_no_print_transaction') }}",
+                    url: "{{ route('create_transaction') }}",
                     data: {
                         _token: '{{csrf_token()}}',
                         'total_harga': $('#total_harga').val(),
-                        'total_qty'  : $('#total_qty').val()
+                        'total_qty'  : $('#total_qty').val(),
+                        'data'      : JSON.stringify(getCartData()),
+                        'print'     : 0
                     },
                     success: function(response) {
-                        // Swal.fire(
-                        // 'Deleted!',
-                        // 'Your file has been deleted.',
-                        // 'success'
-                        // ).then((result) => {
-                            window.location.reload();
-                        // })
+                        window.location.reload();
                     }
                 });
             }

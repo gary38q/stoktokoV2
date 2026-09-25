@@ -27,9 +27,10 @@ class PembelianServices
         return view('pages.menu_now.POS',compact('product','cart'));
     }
 
-    public function transaction(Request $request,$print)
+    public function transaction(Request $request)
     {
-        $cart = Cart::where('user_id',Auth::user()->id)->get();
+        // $cart = Cart::where('user_id',Auth::user()->id)->get();
+        $data = json_decode($request->data, true);
         $dt = Carbon::now();
 
         //Create History
@@ -40,34 +41,34 @@ class PembelianServices
             'total_harga'   => $request->total_harga
         ]);
 
-        if($print == 1)
+        if($request->print == 1)
         {
-            $this->print_receipt($cart, $history->id);
+            $this->print_receipt($data, $history->id);
         }
         
 
-        foreach($cart as $cart)
+        foreach($data as $cart)
         {
-            $product = Produk::where('produk_SKU',$cart->cart_SKU)->first();
+            $product = Produk::where('produk_SKU',$cart['item_id'])->first();
 
-            $qtyakhir = $product->jumlah_stock - $cart->Jumlah;
+            $qtyakhir = $product->jumlah_stock - $cart['quantity'];
 
             history::create([
                 'user_id'       => Auth::user()->id,
                 'history_id'    => $history->id,
                 'nama_produk'   => $product->nama_produk,
-                'jumlah'        => $cart->Jumlah,
-                'harga'         => ($cart->Jumlah * $product->harga)
+                'jumlah'        => $cart['quantity'],
+                'harga'         => ($cart['quantity'] * $product->harga)
             ]);
             
             //Update Stock
-            Produk::where('produk_SKU',$cart->cart_SKU)
+            Produk::where('produk_SKU',$cart['item_id'])
             ->update([
                 'jumlah_stock' => $qtyakhir
             ]);
-
-            Cart::where('id',$cart->id)->delete();
         }
+        
+            Cart::where('user_id',Auth::user()->id)->delete();
 
         if($request->kirim == 1){
             return redirect()->route('create_pengiriman',$request->all());
@@ -93,12 +94,12 @@ class PembelianServices
             {
                 $printer -> setTextSize(1, 1);
 
-                $product = Produk::where('produk_SKU',$barang->cart_SKU)->first();
-                $total = $total + $product->harga*$barang->Jumlah;
+                $product = Produk::where('produk_SKU',$barang['item_id'])->first();
+                $total = $total + $product->harga*$barang['quantity'];
 
                 $printer -> text($product->nama_produk."\n");
 
-                $qty = str_split($barang->Jumlah, 8);
+                $qty = str_split($barang['quantity'], 8);
                 foreach ($qty as $k => $l) {
                     $l = trim($l);
                     $qty[$k] = $this->addSpaces($l, 8);
@@ -116,7 +117,7 @@ class PembelianServices
                     $xprice[$k] = $this->addEndSpaces($l, 17);
                 }
 
-                $total_price = str_split(number_format( $product->harga*$barang->Jumlah, 0,',','.'), 15);
+                $total_price = str_split(number_format( $product->harga*$barang['quantity'], 0,',','.'), 15);
                 foreach ($total_price as $k => $l) {
                     $l = trim($l);
                     $total_price[$k] = $this->addEndSpaces($l, 17);
